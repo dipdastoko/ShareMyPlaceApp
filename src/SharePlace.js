@@ -1,6 +1,8 @@
 import { Modal } from "./UI/Modal.js";
 import { Map } from "./UI/Map.js";
 
+// Map added successfully
+
 class PlaceFinder {
   constructor() {
     const adressForm = document.querySelector("form");
