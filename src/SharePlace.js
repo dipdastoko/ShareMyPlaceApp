@@ -1,5 +1,6 @@
 import { Modal } from "./UI/Modal.js";
 import { Map } from "./UI/Map.js";
+import { FindMap } from "./Utility/Location.js";
 
 // Map added successfully
 
@@ -53,7 +54,34 @@ class PlaceFinder {
       }
     );
   }
-  findAdressHandler() {}
+  async findAdressHandler(event) {
+    event.preventDefault();
+    const address = event.target.querySelector("input").value;
+    if (!address || address.trim().length === 0) {
+      alert("Invalid adress entered - please try again");
+      return;
+    }
+    const modal = new Modal(
+      "loading-modal-content",
+      "Loading location please wait"
+    );
+    modal.show();
+    const findMap = new FindMap();
+    if (address) {
+      const result = await findMap.geocoderApi.forwardGeocode({
+        query: address,
+      });
+      if (result.features.length > 0) {
+        const firstFeature = result.features[0];
+        const coordinates = firstFeature.geometry.coordinates;
+        findMap.maps.flyTo({ center: coordinates, zoom: 15 });
+        modal.hide();
+      } else {
+        modal.hide();
+        alert("Address not found");
+      }
+    }
+  }
 }
 
 const placeFinder = new PlaceFinder();
